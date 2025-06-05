@@ -57,7 +57,7 @@ See the [`LICENSE`](LICENSE) file for details.
 
 ## 💡 Acknowledgments
 
-- Inspired by the love of Tunisian culture and music
+– Inspired by the love of Tunisian culture and music, also inspired by **Halim Yousfi's latest reel on his Instagram account about the ignorance of this rich scene by local festivals and cultural organizations, and their prioritization of international artists who may be less relevant to the local context, while overlooking the depth, diversity, and originality of homegrown talent that deserves greater visibility and support.**
 - Data sources: Community contributions, public resources, artist submissions
 
 ---
