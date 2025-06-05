@@ -1,2 +1,2 @@
-# Tunisia-Music-Scene
-This is a list of tunisian artists 🇹🇳
+# 🇹🇳 Tunisia-Music-Scene
+This is a list of Tunisian artists.
