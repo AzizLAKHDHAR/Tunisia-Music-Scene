@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.70d58774.css",
-    "main.js": "/static/js/main.8aa8a46d.js",
-    "static/js/488.abec6102.chunk.js": "/static/js/488.abec6102.chunk.js",
-    "service-worker.js": "/service-worker.js",
-    "index.html": "/index.html",
-    "main.70d58774.css.map": "/static/css/main.70d58774.css.map",
-    "main.8aa8a46d.js.map": "/static/js/main.8aa8a46d.js.map",
-    "488.abec6102.chunk.js.map": "/static/js/488.abec6102.chunk.js.map"
+    "main.css": "/Tunisia-Music-Scene/static/css/main.70d58774.css",
+    "main.js": "/Tunisia-Music-Scene/static/js/main.93875ddc.js",
+    "static/js/488.abec6102.chunk.js": "/Tunisia-Music-Scene/static/js/488.abec6102.chunk.js",
+    "service-worker.js": "/Tunisia-Music-Scene/service-worker.js",
+    "index.html": "/Tunisia-Music-Scene/index.html",
+    "main.70d58774.css.map": "/Tunisia-Music-Scene/static/css/main.70d58774.css.map",
+    "main.93875ddc.js.map": "/Tunisia-Music-Scene/static/js/main.93875ddc.js.map",
+    "488.abec6102.chunk.js.map": "/Tunisia-Music-Scene/static/js/488.abec6102.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.70d58774.css",
-    "static/js/main.8aa8a46d.js"
+    "static/js/main.93875ddc.js"
   ]
 }
