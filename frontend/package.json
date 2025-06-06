@@ -1,4 +1,4 @@
-{ "homepage": "https://AzizLAKHDHAR.github.io/Tunisia-Music-Scene/",
+{ 
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
@@ -40,5 +40,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "homepage": "https://AzizLAKHDHAR.github.io/Tunisia-Music-Scene/"
 }
