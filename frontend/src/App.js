@@ -50,7 +50,7 @@ function Submit() {
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Router>
+      <Router basename="/Tunisia-Music-Scene">
         <GlobalStyle />
         <AppContainer>
           <Navbar />
