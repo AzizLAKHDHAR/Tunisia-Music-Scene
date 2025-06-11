@@ -31,9 +31,15 @@ function Artists() {
 
 function About() {
   return (
-    <Section>
-      <h2>About the Project</h2>
-      <p>This project is a collaborative digital archive and discovery platform for Tunisian music, inspired by the love of Tunisian culture and music. Contributions are welcome!</p>
+    <Section style={{ textAlign: 'center', lineHeight: '1.8', fontSize: '1.1rem' }}>
+      <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>About the Project</h2>
+      <p style={{ maxWidth: '800px', margin: '0 auto', marginBottom: '1.5rem' }}>
+        This project is a heartfelt effort to celebrate and preserve the vibrant music scene of Tunisia. It’s a space where the rich tapestry of Tunisian music can be explored and appreciated.
+      </p>
+      <p style={{ maxWidth: '800px', margin: '0 auto', marginBottom: '1.5rem' }}>
+        Despite its incredible diversity and originality, the local scene often doesn’t get the recognition it deserves. Local festivals and cultural organizations sometimes overlook homegrown talent in favor of international acts. This platform is here to change that narrative, shining a light on the artists who make Tunisia’s music scene so special.
+      </p>
+      
     </Section>
   );
 }
