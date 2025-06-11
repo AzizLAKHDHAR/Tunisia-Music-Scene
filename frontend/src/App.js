@@ -42,7 +42,17 @@ function Submit() {
   return (
     <Section>
       <h2>Submit an Artist</h2>
-      <p>Feature coming soon! You’ll be able to submit new artists via a form.</p>
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLSdfHOuvbmmwh1a5PlsrDfEodaO0G9TmksdjhH8vb0VlVndoLw/viewform?embedded=true"
+        width="640"
+        height="1544"
+        frameBorder="0"
+        marginHeight="0"
+        marginWidth="0"
+        style={{ border: 'none' }}
+      >
+        Loading…
+      </iframe>
     </Section>
   );
 }
