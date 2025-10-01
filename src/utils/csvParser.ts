@@ -10,7 +10,13 @@ export interface Artist {
 
 export const fetchArtistsFromCSV = async (): Promise<Artist[]> => {
   try {
-    const response = await fetch('/artists.csv');
+    const csvPath = process.env.NODE_ENV === 'production' ? '/Tunisia-Music-Scene/artists.csv' : '/artists.csv';
+    const response = await fetch(csvPath);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch CSV: ${response.status}`);
+    }
+    
     const csvText = await response.text();
     
     return new Promise((resolve, reject) => {
@@ -21,8 +27,15 @@ export const fetchArtistsFromCSV = async (): Promise<Artist[]> => {
           if (results.errors.length > 0) {
             console.error('CSV parsing errors:', results.errors);
           }
-          const artists = results.data as Artist[];
-          resolve(artists.filter(artist => artist.Name && artist.Name.trim() !== ''));
+          const artists = (results.data as Artist[]).filter(artist => 
+            artist && 
+            typeof artist === 'object' && 
+            artist.Name && 
+            artist.Name.trim() !== '' &&
+            artist.Genre &&
+            artist.Genre.trim() !== ''
+          );
+          resolve(artists);
         },
         error: (error) => {
           reject(error);
@@ -69,7 +82,7 @@ export const convertToDisplayArtist = (artist: Artist, index: number) => {
   return {
     name: artist.Name,
     genre: artist.Genre,
-    image: artist.Image || '/placeholder.svg',
+    image: artist.Image || (process.env.NODE_ENV === 'production' ? '/Tunisia-Music-Scene/placeholder.svg' : '/placeholder.svg'),
     spotify: artist.Spotify,
     youtube: artist.YouTube,
     color: colors[index % colors.length],
@@ -119,7 +132,7 @@ export const convertToFrontOfficeArtist = (artist: Artist, index: number) => {
     name: artist.Name,
     genre: artist.Genre,
     description: `Innovative ${artist.Genre} artist pushing boundaries in Tunisia's dynamic music scene`,
-    image: artist.Image || '/placeholder.svg',
+    image: artist.Image || (process.env.NODE_ENV === 'production' ? '/Tunisia-Music-Scene/placeholder.svg' : '/placeholder.svg'),
     color: colors[index % colors.length],
     location: locations[index % locations.length],
     yearActive: yearStarted.toString(),

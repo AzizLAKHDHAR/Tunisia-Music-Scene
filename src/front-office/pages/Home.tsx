@@ -79,7 +79,7 @@ const Home = () => {
             artist: {
               name: artist.Name,
               username: `@${artist.Name.toLowerCase().replace(/\s+/g, '_')}`,
-              avatar: artist.Image || '/placeholder.svg'
+              avatar: artist.Image || (process.env.NODE_ENV === 'production' ? '/Tunisia-Music-Scene/placeholder.svg' : '/placeholder.svg')
             },
             genre: artist.Genre
           };
@@ -118,24 +118,14 @@ const Home = () => {
       {/* Hero Image - Cleef Post */}
       <section className="px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <picture>
-            <source 
-              media="(min-width: 1024px)" 
-              srcSet="/cleef post.png 1024w, /cleef post.png 2048w" 
-              sizes="1024px"
-            />
-            <source 
-              media="(min-width: 768px)" 
-              srcSet="/cleef post.png 768w, /cleef post.png 1536w" 
-              sizes="768px"
-            />
+          <div>
             <img 
-              src="/cleef post.png" 
+              src={process.env.NODE_ENV === 'production' ? '/Tunisia-Music-Scene/cleef%20post.png' : '/cleef post.png'}
               alt="Cleef Post" 
               className="w-full h-auto rounded-xl shadow-lg"
               loading="eager"
             />
-          </picture>
+          </div>
         </div>
       </section>
       

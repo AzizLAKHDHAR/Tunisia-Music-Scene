@@ -9,7 +9,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center space-x-2 mb-4">
-              <img src="/alt scene 2.png" alt="AltScene TN" className="h-6 w-6" />
+              <img src={process.env.NODE_ENV === 'production' ? '/Tunisia-Music-Scene/alt%20scene%202.png' : '/alt scene 2.png'} alt="AltScene TN" className="h-6 w-6" />
               <span className="text-xl font-bold text-foreground">AltScene TN</span>
             </Link>
             <p className="text-muted-foreground mb-6 max-w-md">

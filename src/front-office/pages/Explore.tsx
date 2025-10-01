@@ -21,7 +21,7 @@ const Explore = () => {
         // Take first 5 artists from CSV for featured section
         const featured = csvArtists.slice(0, 5).map(artist => ({
           name: artist.Name,
-          image: artist.Image || '/placeholder.svg'
+          image: artist.Image || (process.env.NODE_ENV === 'production' ? '/Tunisia-Music-Scene/placeholder.svg' : '/placeholder.svg')
         }));
         setFeaturedArtists(featured);
       } catch (err) {

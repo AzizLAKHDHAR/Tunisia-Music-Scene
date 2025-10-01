@@ -44,7 +44,7 @@ const Navbar = ({ variant = "tunisia" }: NavbarProps) => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/alt scene 2.png" alt="AltScene TN" className="h-8 w-8" />
+            <img src={process.env.NODE_ENV === 'production' ? '/Tunisia-Music-Scene/alt%20scene%202.png' : '/alt scene 2.png'} alt="AltScene TN" className="h-8 w-8" />
             <span className="text-xl font-bold text-foreground">{logoText}</span>
           </Link>
 
