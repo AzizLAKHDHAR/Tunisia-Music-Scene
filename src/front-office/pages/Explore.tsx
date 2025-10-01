@@ -7,15 +7,40 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Users, MapPin, Award, ArrowRight, Star, Calendar, Phone, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import tunisiaDesert from "@/assets/tunisia-desert.jpg";
+import { useState, useEffect } from "react";
+import { fetchArtistsFromCSV, Artist } from "@/utils/csvParser";
 
 const Explore = () => {
-  const featuredArtists = [
-    { name: "Omar Souleyman", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop&crop=face" },
-    { name: "Emel Mathlouthi", image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" },
-    { name: "Dhafer Youssef", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" },
-    { name: "Mounira Hamdi", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" },
-    { name: "Lotfi Bouchnak", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" },
-  ];
+  const [featuredArtists, setFeaturedArtists] = useState<{ name: string; image: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadFeaturedArtists = async () => {
+      try {
+        const csvArtists = await fetchArtistsFromCSV();
+        // Take first 5 artists from CSV for featured section
+        const featured = csvArtists.slice(0, 5).map(artist => ({
+          name: artist.Name,
+          image: artist.Image || '/placeholder.svg'
+        }));
+        setFeaturedArtists(featured);
+      } catch (err) {
+        console.error('Error loading featured artists:', err);
+        // Fallback to original hardcoded artists if CSV fails
+        setFeaturedArtists([
+          { name: "Omar Souleyman", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop&crop=face" },
+          { name: "Emel Mathlouthi", image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" },
+          { name: "Dhafer Youssef", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" },
+          { name: "Mounira Hamdi", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" },
+          { name: "Lotfi Bouchnak", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFeaturedArtists();
+  }, []);
 
   const featuredVenues = [
     {
@@ -226,20 +251,24 @@ const Explore = () => {
               </Button>
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
-            {featuredArtists.map((artist, index) => (
-              <div key={index} className="flex flex-col items-center group cursor-pointer">
-                <div className="w-24 h-24 rounded-full overflow-hidden mb-4 group-hover:scale-105 transition-transform duration-200">
-                  <img
-                    src={artist.image}
-                    alt={artist.name}
-                    className="w-full h-full object-cover"
-                  />
+          {loading ? (
+            <div className="text-center text-gray-300 py-8">Loading featured artists...</div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+              {featuredArtists.map((artist, index) => (
+                <div key={index} className="flex flex-col items-center group cursor-pointer">
+                  <div className="w-24 h-24 rounded-full overflow-hidden mb-4 group-hover:scale-105 transition-transform duration-200">
+                    <img
+                      src={artist.image}
+                      alt={artist.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-sm text-gray-300 text-center font-medium group-hover:text-blue-400 transition-colors">{artist.name}</span>
                 </div>
-                <span className="text-sm text-gray-300 text-center font-medium group-hover:text-blue-400 transition-colors">{artist.name}</span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

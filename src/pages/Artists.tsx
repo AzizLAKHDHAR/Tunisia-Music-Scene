@@ -1,82 +1,70 @@
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import { fetchArtistsFromCSV, convertToDisplayArtist, Artist } from "@/utils/csvParser";
+
+interface DisplayArtist {
+  name: string;
+  genre: string;
+  image: string;
+  spotify: string;
+  youtube: string;
+  color: string;
+  description: string;
+  location: string;
+  yearActive: string;
+  albumsCount: number;
+  socialLinks: {
+    spotify: string;
+    youtube: string;
+    instagram: string;
+  };
+}
 
 const Artists = () => {
-  const artists = [
-    {
-      name: "Amira",
-      description: "Emerging star blending traditional melodies with modern pop",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
-      color: "bg-orange-200"
-    },
-    {
-      name: "Karim",
-      description: "Veteran artist known for his soulful voice and poetic lyrics",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
-      color: "bg-slate-600"
-    },
-    {
-      name: "Leila",
-      description: "Rising talent in the electronic music scene, experimenting with new sounds",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
-      color: "bg-orange-200"
-    },
-    {
-      name: "Omar",
-      description: "Iconic figure in Tunisian folk music, preserving cultural heritage",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
-      color: "bg-orange-200"
-    },
-    {
-      name: "Sonia",
-      description: "Versatile singer-songwriter with a unique blend of genres",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
-      color: "bg-gray-600"
-    },
-    {
-      name: "Fares",
-      description: "Innovative producer pushing the boundaries of Tunisian hip-hop",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
-      color: "bg-teal-500"
-    },
-    {
-      name: "Nour",
-      description: "Classical musician renowned for her mastery of the oud",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
-      color: "bg-slate-600"
-    },
-    {
-      name: "Hassan",
-      description: "Rock band known for their energetic performances and socially conscious lyrics",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
-      color: "bg-slate-600"
-    },
-    {
-      name: "Rima",
-      description: "Indie artist with a dreamy soundscape and introspective lyrics",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
-      color: "bg-orange-400"
-    },
-    {
-      name: "Walid",
-      description: "Popular singer known for his catchy tunes and vibrant stage presence",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
-      color: "bg-slate-600"
-    },
-    {
-      name: "Salma",
-      description: "Jazz vocalist with a smooth and captivating style",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
-      color: "bg-orange-200"
-    },
-    {
-      name: "Youssef",
-      description: "Experimental musician exploring the intersection of traditional and electronic music",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
-      color: "bg-orange-300"
-    },
-  ];
+  const [artists, setArtists] = useState<DisplayArtist[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadArtists = async () => {
+      try {
+        const csvArtists = await fetchArtistsFromCSV();
+        const displayArtists = csvArtists.map((artist, index) => convertToDisplayArtist(artist, index));
+        setArtists(displayArtists);
+      } catch (err) {
+        setError('Failed to load artists');
+        console.error('Error loading artists:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadArtists();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation variant="verse" />
+        <div className="container mx-auto px-4 lg:px-8 py-8">
+          <div className="text-center text-foreground">Loading artists...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation variant="verse" />
+        <div className="container mx-auto px-4 lg:px-8 py-8">
+          <div className="text-center text-red-500">{error}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

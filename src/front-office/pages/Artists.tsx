@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, MapPin, Calendar, Music, Instagram, Youtube, X } from "lucide-react";
 import { Navbar, Footer } from '../index';
+import { fetchArtistsFromCSV, convertToFrontOfficeArtist, Artist } from "@/utils/csvParser";
 
 // Custom SVG Icons
 const SpotifyIcon = ({ className }: { className?: string }) => (
@@ -23,9 +24,48 @@ const SoundCloudIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+interface FrontOfficeArtist {
+  name: string;
+  genre: string;
+  description: string;
+  image: string;
+  color: string;
+  location: string;
+  yearActive: string;
+  albumsCount: number;
+  bio: string;
+  socialLinks: {
+    spotify?: string;
+    youtube?: string;
+    bandcamp?: string;
+    soundcloud?: string;
+    instagram?: string;
+  };
+}
+
 const Artists: React.FC = () => {
   const [selectedArtist, setSelectedArtist] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [artists, setArtists] = useState<FrontOfficeArtist[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadArtists = async () => {
+      try {
+        const csvArtists = await fetchArtistsFromCSV();
+        const displayArtists = csvArtists.map((artist, index) => convertToFrontOfficeArtist(artist, index));
+        setArtists(displayArtists);
+      } catch (err) {
+        setError('Failed to load artists');
+        console.error('Error loading artists:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadArtists();
+  }, []);
 
   const openModal = (index: number) => {
     setSelectedArtist(index);
@@ -37,107 +77,27 @@ const Artists: React.FC = () => {
     setSelectedArtist(null);
   };
 
-  const artists = [
-    {
-      name: "Amina Fakhet",  
-      genre: "Electronic Folk",
-      description: "Blending traditional Tunisian melodies with modern electronic beats",
-      image: "/placeholder.svg",
-      color: "bg-gradient-to-br from-purple-400 to-blue-500",
-      location: "Tunis, Tunisia",
-      yearActive: "2015",
-      albumsCount: 3,
-      bio: "Amina Fakhet is a pioneering artist in the Tunisian electronic folk scene. She masterfully combines traditional oud melodies with contemporary electronic production, creating a unique sound that bridges generations. Her work has been featured in international festivals and she's considered one of the most innovative artists in North African music today.",
-      socialLinks: {
-        spotify: "https://spotify.com",
-        bandcamp: "https://bandcamp.com",
-        youtube: "https://youtube.com",
-        soundcloud: "https://soundcloud.com",
-        instagram: "https://instagram.com"
-      }
-    },
-    {
-      name: "Karim Ouesslati",
-      genre: "Jazz Fusion",
-      description: "Innovative jazz compositions with Middle Eastern influences",
-      image: "/placeholder.svg", 
-      color: "bg-gradient-to-br from-orange-400 to-red-500",
-      location: "Sfax, Tunisia",
-      yearActive: "2012",
-      albumsCount: 4,
-      bio: "Karim Ouesslati is a virtuoso pianist and composer who has revolutionized the jazz scene in Tunisia. His compositions seamlessly blend bebop jazz with traditional Arabic maqam scales, creating a distinctive sound that has earned him recognition across the MENA region. He has collaborated with numerous international artists and continues to push the boundaries of jazz fusion.",
-      socialLinks: {
-        spotify: "https://spotify.com",
-        youtube: "https://youtube.com",
-        instagram: "https://instagram.com"
-      }
-    },
-    {
-      name: "Leila Ben Ahmed",
-      genre: "Indie Rock",
-      description: "Powerful vocals and introspective lyrics in Arabic and French",
-      image: "/placeholder.svg",
-      color: "bg-gradient-to-br from-green-400 to-teal-500",
-      location: "Sousse, Tunisia",
-      yearActive: "2018",
-      albumsCount: 2,
-      bio: "Leila Ben Ahmed emerged as a powerful voice in the Tunisian indie rock scene with her bilingual approach to songwriting. Her music explores themes of identity, social change, and personal growth, resonating with young audiences across the Maghreb. Her debut album received critical acclaim for its raw authenticity and emotional depth.",
-      socialLinks: {
-        spotify: "https://spotify.com",
-        bandcamp: "https://bandcamp.com",
-        soundcloud: "https://soundcloud.com",
-        instagram: "https://instagram.com"
-      }
-    },
-    {
-      name: "Mehdi Trabelsi",
-      genre: "Hip Hop",
-      description: "Conscious rap addressing social issues in Tunisia",
-      image: "/placeholder.svg",
-      color: "bg-gradient-to-br from-yellow-400 to-orange-500",
-      location: "Bizerte, Tunisia",
-      yearActive: "2016",
-      albumsCount: 5,
-      bio: "Mehdi Trabelsi is one of Tunisia's most socially conscious rappers, using his platform to address issues ranging from youth unemployment to political corruption. His lyrics, delivered in Tunisian dialect, have made him a voice for his generation. Despite facing censorship challenges, he continues to produce music that reflects the struggles and hopes of modern Tunisia.",
-      socialLinks: {
-        spotify: "https://spotify.com",
-        youtube: "https://youtube.com",
-        soundcloud: "https://soundcloud.com"
-      }
-    },
-    {
-      name: "Yasmine Hamdan",
-      genre: "Alternative Pop",
-      description: "Dreamy soundscapes with poetic Arabic lyrics",
-      image: "/placeholder.svg",
-      color: "bg-gradient-to-br from-pink-400 to-purple-500",
-      location: "Monastir, Tunisia",
-      yearActive: "2014",
-      albumsCount: 3,
-      bio: "Yasmine Hamdan creates ethereal alternative pop music that transports listeners to otherworldly realms. Her haunting vocals and atmospheric production style have earned her a dedicated following in the alternative music scene. She draws inspiration from both Western indie pop and traditional Arabic poetry, creating a sound that's uniquely her own.",
-      socialLinks: {
-        spotify: "https://spotify.com",
-        bandcamp: "https://bandcamp.com",
-        instagram: "https://instagram.com"
-      }
-    },
-    {
-      name: "Omar Zribi",
-      genre: "World Music",
-      description: "Master of traditional oud with contemporary arrangements",
-      image: "/placeholder.svg",
-      color: "bg-gradient-to-br from-indigo-400 to-cyan-500",
-      location: "Kairouan, Tunisia",
-      yearActive: "2010",
-      albumsCount: 6,
-      bio: "Omar Zribi is a master oud player who has dedicated his career to preserving and modernizing traditional Tunisian music. Trained in classical Arabic music from a young age, he has developed a unique style that honors traditional techniques while incorporating contemporary elements. His performances have graced stages from Carthage to Carnegie Hall.",
-      socialLinks: {
-        youtube: "https://youtube.com",
-        soundcloud: "https://soundcloud.com",
-        instagram: "https://instagram.com"
-      }
-    }
-  ];
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar variant="tunisia" />
+        <div className="container mx-auto px-4 lg:px-8 py-8">
+          <div className="text-center text-foreground">Loading artists...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar variant="tunisia" />
+        <div className="container mx-auto px-4 lg:px-8 py-8">
+          <div className="text-center text-red-500">{error}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

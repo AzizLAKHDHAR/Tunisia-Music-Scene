@@ -4,58 +4,112 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Share, Play, Calendar, MapPin } from "lucide-react";
+import { useState, useEffect } from "react";
+import { fetchArtistsFromCSV, Artist } from "@/utils/csvParser";
+
+interface MusicPost {
+  id: number;
+  type: string;
+  title: string;
+  artist: { name: string; username: string; avatar: string };
+  date: string;
+  description: string;
+  image: string;
+  genre: string;
+  duration?: string;
+  location?: string;
+  readTime?: string;
+  hasAudio: boolean;
+}
 
 const Home = () => {
-  const musicPosts = [
-    {
-      id: 1,
-      type: "release",
-      title: "Desert Dreams - New Single",
-      artist: { name: "Amani Tounsi", username: "@amani_music", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" },
-      date: "2 hours ago",
-      description: "A fusion of traditional Tunisian melodies with modern electronic beats. This single explores the vastness of the Sahara through sound.",
-      image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
-      genre: "Electronic Fusion",
-      duration: "3:45",
-      hasAudio: true
-    },
-    {
-      id: 2,
-      type: "event",
-      title: "Live at Carthage Theatre",
-      artist: { name: "Leila Fusion", username: "@leila_fusion", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" },
-      date: "Tomorrow 8:00 PM",
-      description: "An intimate concert bringing together traditional Tunisian folk with contemporary jazz. Experience live music in the historic Carthage Theatre.",
-      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-      genre: "Folk Jazz",
-      location: "Carthage Theatre, Tunis",
-      hasAudio: false
-    },
-    {
-      id: 3,
-      type: "article",
-      title: "The Underground Revolution",
-      artist: { name: "Sarah Ben Ali", username: "@sarah_music", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" },
-      date: "1 day ago",
-      description: "Exploring how young Tunisian artists are creating a vibrant underground scene that challenges traditional musical boundaries and creates new sounds.",
-      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
-      genre: "Music Journalism",
-      readTime: "5 min read",
-      hasAudio: false
-    },
-    {
-      id: 4,
-      type: "release",
-      title: "Echoes of the Desert - New EP",
-      artist: { name: "Sahara Sounds", username: "@sahara_electronic", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" },
-      date: "2 days ago",
-      description: "A 5-track EP telling stories of Tunisia's landscapes through electronic soundscapes. Each track represents a different region of our beautiful country.",
-      image: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=300&fit=crop",
-      genre: "Electronic",
-      duration: "18:32",
-      hasAudio: true
-    }
-  ];
+  const [musicPosts, setMusicPosts] = useState<MusicPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadMusicPosts = async () => {
+      try {
+        const csvArtists = await fetchArtistsFromCSV();
+        
+        // Create posts using real artists from CSV
+        const postTemplates = [
+          {
+            type: "release",
+            title: "Desert Dreams - New Single",
+            date: "2 hours ago",
+            description: "A fusion of traditional Tunisian melodies with modern electronic beats. This single explores the vastness of the Sahara through sound.",
+            image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
+            duration: "3:45",
+            hasAudio: true
+          },
+          {
+            type: "event",
+            title: "Live at Carthage Theatre",
+            date: "Tomorrow 8:00 PM",
+            description: "An intimate concert bringing together traditional Tunisian folk with contemporary jazz. Experience live music in the historic Carthage Theatre.",
+            image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
+            location: "Carthage Theatre, Tunis",
+            hasAudio: false
+          },
+          {
+            type: "article",
+            title: "The Underground Revolution",
+            date: "1 day ago",
+            description: "Exploring how young Tunisian artists are creating a vibrant underground scene that challenges traditional musical boundaries and creates new sounds.",
+            image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
+            readTime: "5 min read",
+            hasAudio: false
+          },
+          {
+            type: "release",
+            title: "Echoes of the Desert - New EP",
+            date: "2 days ago",
+            description: "A 5-track EP telling stories of Tunisia's landscapes through electronic soundscapes. Each track represents a different region of our beautiful country.",
+            image: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=300&fit=crop",
+            duration: "18:32",
+            hasAudio: true
+          }
+        ];
+
+        const posts = postTemplates.map((template, index) => {
+          const artist = csvArtists[index % csvArtists.length];
+          return {
+            id: index + 1,
+            ...template,
+            artist: {
+              name: artist.Name,
+              username: `@${artist.Name.toLowerCase().replace(/\s+/g, '_')}`,
+              avatar: artist.Image || '/placeholder.svg'
+            },
+            genre: artist.Genre
+          };
+        });
+
+        setMusicPosts(posts);
+      } catch (err) {
+        console.error('Error loading music posts:', err);
+        // Fallback to original hardcoded posts
+        setMusicPosts([
+          {
+            id: 1,
+            type: "release",
+            title: "Desert Dreams - New Single",
+            artist: { name: "Amani Tounsi", username: "@amani_music", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" },
+            date: "2 hours ago",
+            description: "A fusion of traditional Tunisian melodies with modern electronic beats. This single explores the vastness of the Sahara through sound.",
+            image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
+            genre: "Electronic Fusion",
+            duration: "3:45",
+            hasAudio: true
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMusicPosts();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -89,8 +143,11 @@ const Home = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-foreground mb-8">Latest Music Content</h1>
         
-        <div className="space-y-8">
-          {musicPosts.map((post) => (
+        {loading ? (
+          <div className="text-center text-foreground py-8">Loading music content...</div>
+        ) : (
+          <div className="space-y-8">
+            {musicPosts.map((post) => (
             <Card key={post.id} className="w-full overflow-hidden">
               <div className="md:flex">
                 {post.image && (
@@ -184,6 +241,7 @@ const Home = () => {
             </Card>
           ))}
         </div>
+        )}
       </div>
 
       <Footer />
