@@ -23,7 +23,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.NODE_ENV === 'production' ? '/Tunisia-Music-Scene' : ''}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/artists" element={<Artists />} />
